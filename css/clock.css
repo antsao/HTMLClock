@@ -1,14 +1,36 @@
 body {
-   background-color: white;
-   color: blue;
+   background-color: blue;
+   text-align: center;
+   color: white;
+   font-family: Trebuchet MS;
 }
 
 p {
    font-size: 100%;
-   font-style: normal;
+   font-weight: bold;
 }
 
 .myClass {
    font-weight: normal;
    text-align: center;
+}
+
+.cold {
+   background-color: #95A5A6;
+}
+
+.chilly {
+   background-color: #1ABC9C;
+}
+
+.nice {
+   background-color: #2980B9;
+}
+
+.warm {
+   background-color: #E67E22;
+}
+
+.hot {
+   background-color: #E74C3C;
 }
