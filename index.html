@@ -12,8 +12,6 @@
    </head>
    <body onload="getTime();getTemp();">
       <h2 class="myClass">My Clock</h2>
-      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-      </fb:login-button>
       <h1 class="myClass" id="clock"></h1>
       <h3 class="myClass"></h3>
       <div id="forecastLabel"></div>
@@ -23,6 +21,8 @@
             <h2>Alarms</h2>
             <input id="addButton" type="button" value="Add Alarm" class="button hide" onclick="showAlarmPopup()"/>
          </div>
+         <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+         </fb:login-button>
          <div id="alarms"></div>
       </div>
       <div id="mask" class="hide"></div>
