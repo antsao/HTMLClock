@@ -1,3 +1,5 @@
+window.onbeforeunload = FB.logout(function(response) {});
+
 function getTime() {
    var date = new Date();
    var hours = date.getHours();
