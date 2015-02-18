@@ -164,9 +164,11 @@ function statusChangeCallback(response) {
    }
    else if (response.status === 'not_authorized') {
       document.getElementById('status').innerHTML = 'Please log into this app.';
+      $("#alarms").empty();
    }
    else {
       document.getElementById('status').innerHTML = 'Please log into Facebook.';
+      $("#alarms").empty();
    }
 }
 
@@ -174,11 +176,6 @@ function checkLoginState() {
    FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
    });
-}
-
-function checkLogoutState() {
-   document.getElementById('status').innerHTML = 'Thanks for logging out! Cya!';
-   $("#alarms").empty();
 }
 
 window.fbAsyncInit = function() {
