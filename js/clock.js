@@ -1,10 +1,3 @@
-window.onbeforeunload =
-   FB.getLoginStatus(function(response) {
-      if (response.status === "connected") {
-         FB.logout(function(response) {});
-      }
-   });
-
 function getTime() {
    var date = new Date();
    var hours = date.getHours();
