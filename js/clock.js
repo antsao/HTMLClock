@@ -61,18 +61,30 @@ function hideAlarmPopup() {
    $("#popup").attr("class", "hide");
 }
 
+function showAddButton() {
+   $("#addButton").removeAttr("class");
+   $("#addButton").attr("class", "button");
+}
+
 function deleteAlarm(alarmName) {
    var AlarmObject = Parse.Object.extend("Alarm");
    var query = new Parse.Query(AlarmObject);
-   query.find({
-      success: function(results) {
-         for (var i = 0; i < results.length; i++) {
-            console.log(results[i].get("alarmName"));
-            if (results[i].get("alarmName").replace(/\s+/g, '') == alarmName) {
-               results[i].destroy({});
-               $("#" + alarmName).remove();
-            }
-         }
+   FB.getLoginStatus(function(response) {
+      if (response.status === "connected") {
+         FB.api('/me', function(response) {
+            query.find({
+               success: function(results) {
+                  for (var i = 0; i < results.length; i++) {
+                     console.log(results[i].get("alarmName"));
+                     if (results[i].get("alarmName").replace(/\s+/g, '') == alarmName &&
+                         results[i].get("email").replace(/\s+/g, '') == response.email) {
+                        results[i].destroy({});
+                        $("#" + alarmName).remove();
+                     }
+                  }
+               }
+            });
+         });
       }
    });
 }
@@ -107,30 +119,29 @@ function addAlarm() {
       mins : mins,
       ampm : ampm,
    };
-   var userid;
-   FB.api('/me', function(response) {
-      userid = response.id;
-   });
-   alarmObject.save({"userid": userid, "time": time, "alarmName": alarmName}, {
-      success: function(object) {
-         insertAlarm(hours, mins, ampm, alarmName);
-         hideAlarmPopup();
+   FB.getLoginStatus(function(response) {
+      if (response.status === "connected") {
+         FB.api('/me', function(response) {
+            alarmObject.save({"email": response.email, "time": time, "alarmName": alarmName}, {
+               success: function(object) {
+                  insertAlarm(hours, mins, ampm, alarmName);
+                  hideAlarmPopup();
+               }
+            });
+         });
       }
    });
+
 }
 
-function getAllAlarms() {
+function getAllAlarms(email) {
    Parse.initialize("J4BNDShNSeoQJpsuoiaIjl78WUU9IqFsZIseU8gg", "oze02hbWGqTI51Rc9A6yIPnDFrmgozLJEklcIkx3");
    var AlarmObject = Parse.Object.extend("Alarm");
    var query = new Parse.Query(AlarmObject);
-   var userid;
-   FB.api('/me', function(response) {
-      userid = response.id;
-   });
    query.find({
       success: function(results) {
          for (var i = 0; i < results.length; i++) {
-            if (userid == results[i].get("userid")) {
+            if (email == results[i].get("email")) {
                var time = results[i].get("time");
                insertAlarm(time.hours, time.mins, time.ampm, results[i].get("alarmName"));
             }
@@ -139,42 +150,26 @@ function getAllAlarms() {
    });
 }
 
-// Here we run a very simple test of the Graph API after login is
-// successful.  See statusChangeCallback() for when this call is made.
 function testAPI() {
-   console.log('Welcome!  Fetching your information.... ');
    FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+      getAllAlarms(response.email)
    });
 }
 
-// This is called with the results from from FB.getLoginStatus().
 function statusChangeCallback(response) {
-   console.log('statusChangeCallback');
-   console.log(response);
-   // The response object is returned with a status field that lets the
-   // app know the current login status of the person.
-   // Full docs on the response object can be found in the documentation
-   // for FB.getLoginStatus().
    if (response.status === 'connected') {
-      // Logged into your app and Facebook.
       testAPI();
+      showAddButton();
    }
    else if (response.status === 'not_authorized') {
-      // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log into this app.';
    }
    else {
-      // The person is not logged into Facebook, so we're not sure if
-      // they are logged into this app or not.
       document.getElementById('status').innerHTML = 'Please log into Facebook.';
    }
 }
 
-// This function is called when someone finishes with the Login
-// Button.  See the onlogin handler attached to it in the sample
-// code below.
 function checkLoginState() {
    FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
@@ -184,22 +179,11 @@ function checkLoginState() {
 window.fbAsyncInit = function() {
    FB.init({
       appId      : '1424223797870774',
-      cookie     : true,  // enable cookies to allow the server to access the session
-      xfbml      : true,  // parse social plugins on this page
-      version    : 'v2.1' // use version 2.1
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.1'
 });
 
-// Now that we've initialized the JavaScript SDK, we call
-// FB.getLoginStatus().  This function gets the state of the
-// person visiting this page and can return one of three states to
-// the callback you provide.  They can be:
-//
-// 1. Logged into your app ('connected')
-// 2. Logged into Facebook, but not your app ('not_authorized')
-// 3. Not logged into Facebook and can't tell if they are logged into
-//    your app or not.
-//
-// These three cases are handled in the callback function.
 FB.getLoginStatus(function(response) {
    statusChangeCallback(response);
 });
