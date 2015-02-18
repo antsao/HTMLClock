@@ -61,11 +61,6 @@ function hideAlarmPopup() {
    $("#popup").attr("class", "hide");
 }
 
-function showAddButton() {
-   $("#addButton").removeAttr("class");
-   $("#addButton").attr("class", "button");
-}
-
 function deleteAlarm(alarmName) {
    var AlarmObject = Parse.Object.extend("Alarm");
    var query = new Parse.Query(AlarmObject);
@@ -160,7 +155,6 @@ function testAPI() {
 function statusChangeCallback(response) {
    if (response.status === 'connected') {
       testAPI();
-      showAddButton();
    }
    else if (response.status === 'not_authorized') {
       document.getElementById('status').innerHTML = 'Please log into this app.';
