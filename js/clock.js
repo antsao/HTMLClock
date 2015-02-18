@@ -107,7 +107,11 @@ function addAlarm() {
       mins : mins,
       ampm : ampm,
    };
-   alarmObject.save({"time": time, "alarmName": alarmName}, {
+   var userid;
+   FB.api('/me', function(response) {
+      userid = response.id;
+   });
+   alarmObject.save({"userid": userid, "time": time, "alarmName": alarmName}, {
       success: function(object) {
          insertAlarm(hours, mins, ampm, alarmName);
          hideAlarmPopup();
@@ -119,11 +123,17 @@ function getAllAlarms() {
    Parse.initialize("J4BNDShNSeoQJpsuoiaIjl78WUU9IqFsZIseU8gg", "oze02hbWGqTI51Rc9A6yIPnDFrmgozLJEklcIkx3");
    var AlarmObject = Parse.Object.extend("Alarm");
    var query = new Parse.Query(AlarmObject);
+   var userid;
+   FB.api('/me', function(response) {
+      userid = response.id;
+   });
    query.find({
       success: function(results) {
          for (var i = 0; i < results.length; i++) {
-            var time = results[i].get("time");
-            insertAlarm(time.hours, time.mins, time.ampm, results[i].get("alarmName"));
+            if (userid == results[i].get("userid")) {
+               var time = results[i].get("time");
+               insertAlarm(time.hours, time.mins, time.ampm, results[i].get("alarmName"));
+            }
          }
       }
    });
@@ -134,8 +144,8 @@ function getAllAlarms() {
 function testAPI() {
    console.log('Welcome!  Fetching your information.... ');
    FB.api('/me', function(response) {
-   console.log('Successful login for: ' + response.name);
-   document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
    });
 }
 
