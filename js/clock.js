@@ -176,6 +176,11 @@ function checkLoginState() {
    });
 }
 
+function checkLogoutState() {
+   document.getElementById('status').innerHTML = 'Thanks for logging out! Cya!';
+   $("#alarms").empty();
+}
+
 window.fbAsyncInit = function() {
    FB.init({
       appId      : '1424223797870774',
