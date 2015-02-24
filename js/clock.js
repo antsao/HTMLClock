@@ -62,7 +62,7 @@ function hideAlarmPopup() {
 }
 
 function deleteAlarm(alarmName) {
-   ga.push(['_trackEvent', 'Alarm', 'Delete']);
+   ga('send', 'event', 'Alarm', 'Delete');
    var AlarmObject = Parse.Object.extend("Alarm");
    var query = new Parse.Query(AlarmObject);
    FB.getLoginStatus(function(response) {
@@ -103,7 +103,7 @@ function insertAlarm(hours, mins, ampm, alarmName) {
 }
 
 function addAlarm() {
-   ga.push(['_trackEvent', 'Alarm', 'Add']);
+   ga('send', 'event', 'Alarm', 'Add');
    var hours = $("#hours option:selected").text();
    var mins = $("#mins option:selected").text();
    var ampm = $("#ampm option:selected").text();
