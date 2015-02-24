@@ -73,7 +73,7 @@ function deleteAlarm(alarmName) {
                   for (var i = 0; i < results.length; i++) {
                      console.log(results[i].get("alarmName"));
                      if (results[i].get("alarmName").replace(/\s+/g, '') == alarmName &&
-                         results[i].get("email").replace(/\s+/g, '') == response.email) {
+                         results[i].get("id").replace(/\s+/g, '') == response.id) {
                         results[i].destroy({});
                         $("#" + alarmName).remove();
                      }
@@ -119,7 +119,7 @@ function addAlarm() {
    FB.getLoginStatus(function(response) {
       if (response.status === "connected") {
          FB.api('/me', function(response) {
-            alarmObject.save({"email": response.email, "time": time, "alarmName": alarmName}, {
+            alarmObject.save({"id": response.id, "time": time, "alarmName": alarmName}, {
                success: function(object) {
                   insertAlarm(hours, mins, ampm, alarmName);
                   hideAlarmPopup();
@@ -131,14 +131,14 @@ function addAlarm() {
 
 }
 
-function getAllAlarms(email) {
+function getAllAlarms(id) {
    Parse.initialize("J4BNDShNSeoQJpsuoiaIjl78WUU9IqFsZIseU8gg", "oze02hbWGqTI51Rc9A6yIPnDFrmgozLJEklcIkx3");
    var AlarmObject = Parse.Object.extend("Alarm");
    var query = new Parse.Query(AlarmObject);
    query.find({
       success: function(results) {
          for (var i = 0; i < results.length; i++) {
-            if (email == results[i].get("email")) {
+            if (id == results[i].get("id")) {
                var time = results[i].get("time");
                insertAlarm(time.hours, time.mins, time.ampm, results[i].get("alarmName"));
             }
@@ -150,7 +150,7 @@ function getAllAlarms(email) {
 function testAPI() {
    FB.api('/me', function(response) {
       document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
-      getAllAlarms(response.email)
+      getAllAlarms(response.id)
    });
 }
 
