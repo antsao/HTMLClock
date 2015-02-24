@@ -127,6 +127,9 @@ function addAlarm() {
             });
          });
       }
+      else {
+         console.log("what");
+      }
    });
 
 }
