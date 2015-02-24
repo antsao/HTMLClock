@@ -73,7 +73,7 @@ function deleteAlarm(alarmName) {
                   for (var i = 0; i < results.length; i++) {
                      console.log(results[i].get("alarmName"));
                      if (results[i].get("alarmName").replace(/\s+/g, '') == alarmName &&
-                         results[i].get("id").replace(/\s+/g, '') == response.id) {
+                         results[i].get("fbid").replace(/\s+/g, '') == response.id) {
                         results[i].destroy({});
                         $("#" + alarmName).remove();
                      }
@@ -119,7 +119,7 @@ function addAlarm() {
    FB.getLoginStatus(function(response) {
       if (response.status === "connected") {
          FB.api('/me', function(response) {
-            alarmObject.save({"id": response.id, "time": time, "alarmName": alarmName}, {
+            alarmObject.save({"fbid": response.id, "time": time, "alarmName": alarmName}, {
                success: function(object) {
                   insertAlarm(hours, mins, ampm, alarmName);
                   hideAlarmPopup();
@@ -141,7 +141,7 @@ function getAllAlarms(id) {
    query.find({
       success: function(results) {
          for (var i = 0; i < results.length; i++) {
-            if (id == results[i].get("id")) {
+            if (id == results[i].get("fbid")) {
                var time = results[i].get("time");
                insertAlarm(time.hours, time.mins, time.ampm, results[i].get("alarmName"));
             }
